@@ -4,37 +4,37 @@ const Schema = mongoose.Schema;
 const EmployeeSchema = new Schema({
     name: {
         type: String,
-        required: true
-    },
-    email: {
+        required: true,
+      },
+      dob: {
+        type: Date,
+        required: true,
+      },
+      gender: {
+        type: String,
+        enum: ['Male', 'Female', 'Other'],
+        required: true,
+      },
+      parentMobile: {
         type: String,
         required: true,
-        unique: true
-    },
-    phone: {
-        type: String,
-        required: true
-    },
-    department: {
-        type: String,
-        required: true
-    },
-    profileImage: {
-        type: String
-    },
-    salary: {
+      },
+      vaccineCount: {
         type: Number,
-        required: true
+        default: 0, // increment after each scan
+      },
+      qrCodeUrl: {
+        type: String, // stored in Cloudinary
     },
     createdAt: {
         type: Date,
-        default: new Date()
-    },
-    updatedAt: {
+        default: () => new Date()
+      },
+      updatedAt: {
         type: Date,
-        default: new Date()
-    }
-});
+        default: () => new Date()
+      }
+    });
 
 const EmployeeModel = mongoose.model('employees', EmployeeSchema);
 module.exports = EmployeeModel;

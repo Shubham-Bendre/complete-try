@@ -9,20 +9,7 @@ function EmployeeTable({
     fetchEmployees,
     handleUpdateEmployee,
 }) {
-    const headers = ['Name', 'Email', 'Phone', 'Department', 'Actions'];
     const { currentPage, totalPages } = pagination;
-
-    const handleNextPage = () => {
-        if (currentPage < totalPages) {
-            handlePagination(currentPage + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 1) {
-            handlePagination(currentPage - 1);
-        }
-    };
 
     const handlePagination = (page) => {
         if (fetchEmployees) {
@@ -33,94 +20,73 @@ function EmployeeTable({
     const handleDeleteEmployee = async (id) => {
         try {
             const { success, message } = await DeleteEmployeeById(id);
-            if (success) {
-                notify(message, 'success');
-            } else {
-                notify(message, 'error');
-            }
-            if (fetchEmployees) {
-                fetchEmployees();
-            }
+            notify(message, success ? 'success' : 'error');
+            if (fetchEmployees) fetchEmployees();
         } catch (err) {
             console.error(err);
-            notify('Failed to delete Employee', 'error');
+            notify('Failed to delete child', 'error');
         }
     };
 
-    const TableRow = ({ employee }) => (
-        <tr className="border-b">
-            <td className="py-2 px-4">
-                <Link
-                    to={`/employee/${employee._id}`}
-                    className="text-blue-500 hover:underline"
-                >
-                    {employee.name}
-                </Link>
-            </td>
-            <td className="py-2 px-4">{employee.email}</td>
-            <td className="py-2 px-4">{employee.phone}</td>
-            <td className="py-2 px-4">{employee.department}</td>
-            <td className="py-2 px-4 flex space-x-4">
-                {handleUpdateEmployee && (
-                    <button
-                        className="text-yellow-500 hover:text-yellow-600"
-                        onClick={() => handleUpdateEmployee(employee)}
-                    >
-                        ✏️
-                    </button>
-                )}
-                <button
-                    className="text-red-500 hover:text-red-600"
-                    onClick={() => handleDeleteEmployee(employee._id)}
-                >
-                    🗑️
-                </button>
-            </td>
-        </tr>
+    const Card = ({ employee }) => (
+        <Link to={`/employee/${employee._id}`} className="block">
+            <div className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200 hover:bg-gray-50">
+                <div className="flex justify-between items-center mb-2">
+                    <h2 className="text-lg font-semibold text-blue-800">{employee.name}</h2>
+                    <div className="flex space-x-3">
+                        {handleUpdateEmployee && (
+                            <button
+                                className="text-yellow-600 hover:text-yellow-700 text-xl"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    handleUpdateEmployee(employee);
+                                }}
+                            >
+                                ✏️
+                            </button>
+                        )}
+                        <button
+                            className="text-red-600 hover:text-red-700 text-xl"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleDeleteEmployee(employee._id);
+                            }}
+                        >
+                            🗑️
+                        </button>
+                    </div>
+                </div>
+                <div className="text-gray-700 text-sm">
+                    <p><strong>DOB:</strong> {new Date(employee.dob).toDateString()}</p>
+                    <p><strong>Gender:</strong> {employee.gender}</p>
+                    <p><strong>Parent Mobile:</strong> {employee.parentMobile}</p>
+                    <p><strong>Vaccines Taken:</strong> {employee.vaccineCount}</p>
+                </div>
+            </div>
+        </Link>
     );
 
     const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     return (
         <>
-            <table className="table-auto w-full border-collapse border border-gray-300">
-                <thead className="bg-gray-200">
-                    <tr>
-                        {headers.map((header, i) => (
-                            <th
-                                key={i}
-                                className="py-2 px-4 text-left text-gray-600 font-medium"
-                            >
-                                {header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {employees.length === 0 ? (
-                        <tr>
-                            <td
-                                colSpan={headers.length}
-                                className="py-4 text-center text-gray-500"
-                            >
-                                Data Not Found
-                            </td>
-                        </tr>
-                    ) : (
-                        employees.map((emp) => <TableRow employee={emp} key={emp._id} />)
-                    )}
-                </tbody>
-            </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {employees.length === 0 ? (
+                    <p className="text-center text-gray-500 col-span-full">Data Not Found</p>
+                ) : (
+                    employees.map((emp) => <Card employee={emp} key={emp._id} />)
+                )}
+            </div>
 
             {totalPages > 1 && (
-                <div className="flex justify-between items-center mt-4">
+                <div className="flex justify-between items-center mt-6">
                     <span className="text-sm text-gray-600">
                         Page {currentPage} of {totalPages}
                     </span>
                     <div className="flex items-center space-x-2">
                         <button
                             className="px-3 py-1 border rounded text-gray-500 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={handlePreviousPage}
+                            onClick={() => handlePagination(currentPage - 1)}
                             disabled={currentPage === 1}
                         >
                             Previous
@@ -140,7 +106,7 @@ function EmployeeTable({
                         ))}
                         <button
                             className="px-3 py-1 border rounded text-gray-500 hover:bg-gray-200 disabled:opacity-50"
-                            onClick={handleNextPage}
+                            onClick={() => handlePagination(currentPage + 1)}
                             disabled={currentPage === totalPages}
                         >
                             Next

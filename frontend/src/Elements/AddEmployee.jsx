@@ -5,10 +5,9 @@ import { CreateEmployee, UpdateEmployeeById } from '../api';
 function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
   const [employee, setEmployee] = useState({
     name: '',
-    email: '',
-    phone: '',
-    department: '',
-    salary: '',
+    dob: '',
+    gender: 'Male',
+    parentMobile: '',
     profileImage: null,
   });
   const [updateMode, setUpdateMode] = useState(false);
@@ -32,10 +31,9 @@ function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
   const resetEmployeeStates = () => {
     setEmployee({
       name: '',
-      email: '',
-      phone: '',
-      department: '',
-      salary: '',
+      dob: '',
+      gender: 'Male',
+      parentMobile: '',
       profileImage: null,
     });
   };
@@ -46,7 +44,6 @@ function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
       const { success, message } = updateMode
         ? await UpdateEmployeeById(employee, employee._id)
         : await CreateEmployee(employee);
-      console.log('create OR update ', success, message);
       if (success) {
         notify(message, 'success');
       } else {
@@ -77,7 +74,7 @@ function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
       <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <h5 className="text-lg font-medium">
-            {updateMode ? 'Update Employee' : 'Add Employee'}
+            {updateMode ? 'Update Child' : 'Add Child'}
           </h5>
           <button
             type="button"
@@ -93,71 +90,62 @@ function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
               <label className="block text-sm font-medium text-gray-700">Name</label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 name="name"
                 value={employee.name}
                 onChange={handleChange}
                 required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
               <input
-                type="email"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                name="email"
-                value={employee.email}
+                type="date"
+                name="dob"
+                value={employee.dob}
                 onChange={handleChange}
                 required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Phone</label>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                name="phone"
-                value={employee.phone}
+              <label className="block text-sm font-medium text-gray-700">Gender</label>
+              <select
+                name="gender"
+                value={employee.gender}
                 onChange={handleChange}
-                required
-              />
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+              >
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Department</label>
-              <input
-                type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                name="department"
-                value={employee.department}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700">Salary</label>
+              <label className="block text-sm font-medium text-gray-700">Parent Mobile No.</label>
               <input
                 type="text"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                name="salary"
-                value={employee.salary}
+                name="parentMobile"
+                value={employee.parentMobile}
                 onChange={handleChange}
                 required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
               />
             </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">Profile Image</label>
               <input
                 type="file"
-                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
                 name="profileImage"
                 onChange={handleFileChange}
+                className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-indigo-50 file:text-indigo-600 hover:file:bg-indigo-100"
               />
             </div>
             <div className="flex justify-end">
               <button
                 type="button"
-                className="px-4 py-2 mr-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                 onClick={handleModalClose}
+                className="px-4 py-2 mr-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
               >
                 Cancel
               </button>

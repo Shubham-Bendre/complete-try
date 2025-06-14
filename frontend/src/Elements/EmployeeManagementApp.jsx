@@ -4,9 +4,7 @@ import AddEmployee from './AddEmployee';
 import { DeleteEmployeeById, GetAllEmployees } from '../api';
 import { ToastContainer } from 'react-toastify';
 import { notify } from '../utils';
-
-import { Button } from "@/components/ui/button"
-
+import { Button } from "@/components/ui/button";
 
 const EmployeeManagementApp = () => {
     const [showModal, setShowModal] = useState(false);
@@ -22,13 +20,11 @@ const EmployeeManagementApp = () => {
     });
 
     const fetchEmployees = async (search = '', page = 1, limit = 5) => {
-        console.log('Called fetchEmployees');
         try {
             const data = await GetAllEmployees(search, page, limit);
-            console.log(data);
             setEmployeesData(data);
         } catch (err) {
-            alert('Error', err);
+            notify('Error fetching data', 'error');
         }
     };
 
@@ -40,22 +36,24 @@ const EmployeeManagementApp = () => {
         fetchEmployees(e.target.value);
     };
 
-    const handleUpdateEmployee = async (emp) => {
+    const handleUpdateEmployee = (emp) => {
         setEmployeeObj(emp);
         setShowModal(true);
     };
 
     return (
         <div className="flex flex-col justify-center items-center w-full p-6">
-            <h1 className="text-2xl font-bold mb-4">Employee Management App</h1>
+            <h1 className="text-2xl font-bold mb-4">Child Management System</h1>
             <div className="w-full flex justify-center">
                 <div className="w-4/5 border bg-gray-100 p-6 rounded shadow">
                     <div className="flex justify-between mb-4">
-                        <Button variant="default" onClick={() => setShowModal(true)}>Add</Button>;
+                        <Button variant="default" onClick={() => setShowModal(true)}>
+                            Add
+                        </Button>
                         <input
                             onChange={handleSearch}
                             type="text"
-                            placeholder="Search Employees..."
+                            placeholder="Search by name..."
                             className="form-control w-1/2 border border-gray-300 rounded py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         />
                     </div>
@@ -65,7 +63,6 @@ const EmployeeManagementApp = () => {
                         fetchEmployees={fetchEmployees}
                         handleUpdateEmployee={handleUpdateEmployee}
                     />
-
                     <AddEmployee
                         fetchEmployees={fetchEmployees}
                         showModal={showModal}
