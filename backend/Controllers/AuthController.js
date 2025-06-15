@@ -4,7 +4,7 @@ const User = require('../Models/UserModel');
 exports.signup = async (req, res) => {
   const { name, email, password } = req.body;
   try {
-    const user = new User({ name, email, password });
+    const user = new User({ name, email, password, role: 'Parent' });
     await user.save();
     res.status(201).json({ message: 'Signup successful' });
   } catch (err) {

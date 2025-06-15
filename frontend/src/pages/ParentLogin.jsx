@@ -12,6 +12,7 @@ export default function ParentLogin() {
       const response = await axios.post('http://localhost:8080/api/auth/login', form);
       console.log(response);
       alert('Login successful');
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       navigate('/employee', { state: { user: response.data.user } }); // redirect to landing/dashboard page
     } catch {
       alert('Invalid credentials');

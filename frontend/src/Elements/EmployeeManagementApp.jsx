@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const EmployeeManagementApp = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const user = location.state?.user ? location.state.user :  JSON.parse(localStorage.getItem('user'));
     if(user){
         localStorage.setItem('user', JSON.stringify(user));
