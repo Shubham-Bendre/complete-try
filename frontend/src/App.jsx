@@ -10,6 +10,8 @@ import ParentLogin from './pages/ParentLogin';
 import ParentSignup from './pages/ParentSignup';
 import DoctorAuth from './pages/DoctorAuth';
 import DoctorDashboard from './pages/DoctorDashboard';
+import HealthcareDashboard from './Elements/HealthCareDashboard';
+import ProfilePage from './Elements/Profile';
 
 // In a real app, you'd replace this with auth logic
 const isAuthenticated = true; // mock value
@@ -23,6 +25,7 @@ function App() {
           <Route path="/parent-login" element={<ParentLogin />} />
           <Route path="/parent-signup" element={<ParentSignup />} />
           <Route path="/doctor-auth" element={<DoctorAuth />} />
+          <Route path="/profile-page" element={<ProfilePage/>} />
 
           {/* Doctor Dashboard */}
           <Route
@@ -35,6 +38,12 @@ function App() {
             path="/employee"
             element={isAuthenticated ? <EmployeeManagementApp /> : <Navigate to="/parent-login" />}
           />
+
+          <Route
+            path="/homepage"
+            element={isAuthenticated ? <HealthcareDashboard/> : <Navigate to="/parent-login" />}
+          />
+
           <Route
             path="/employee/:id"
             element={isAuthenticated ? <EmployeeDetails /> : <Navigate to="/parent-login" />}
