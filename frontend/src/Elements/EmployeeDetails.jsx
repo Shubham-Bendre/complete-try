@@ -70,6 +70,15 @@ const EmployeeDetails = () => {
 
     return (
         <div className="container mx-auto mt-10">
+		<div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold text-gray-800">Child Vaccination Details</h1>
+                <button 
+                    onClick={handleLogout}
+                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition-colors"
+                >
+                    Logout
+                </button>
+            </div>
             <div className="bg-white shadow-md rounded-lg overflow-hidden">
                 <div className="bg-gray-800 text-white px-6 py-4">
                     <h2 className="text-2xl font-bold">Child Details</h2>

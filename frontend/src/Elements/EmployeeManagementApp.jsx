@@ -5,7 +5,7 @@ import { DeleteEmployeeById, GetAllEmployees } from '../api';
 import { ToastContainer } from 'react-toastify';
 import { notify } from '../utils';
 import { Button } from "@/components/ui/button";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const EmployeeManagementApp = () => {
     const location = useLocation();
@@ -25,6 +25,15 @@ const EmployeeManagementApp = () => {
             totalPages: 0
         }
     });
+
+    const handleLogout = () => {
+        // Clear any user data from storage if needed
+        localStorage.removeItem('token');
+        localStorage.removeItem('userData');
+        
+        // Redirect to home page
+        navigate('/');
+    };
 
     const fetchEmployees = async (search = '', page = 1, limit = 5) => {
         try {
@@ -49,7 +58,15 @@ const EmployeeManagementApp = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center items-center w-full p-6">
+        <div className="flex flex-col justify-center items-center w-full p-6 relative">
+            {/* Logout Button - Top Right Corner */}
+            <button 
+                onClick={handleLogout}
+                className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow transition-colors"
+            >
+                Logout
+            </button>
+
             <h1 className="text-2xl font-bold mb-4">Child Management System</h1>
             <div className="w-full flex justify-center">
                 <div className="w-4/5 border bg-gray-100 p-6 rounded shadow">

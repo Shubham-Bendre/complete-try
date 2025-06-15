@@ -36,3 +36,33 @@ exports.doctorLogin = (req, res) => {
     res.status(401).json({ error: 'Invalid doctor credentials' });
   }
 };
+
+// Logout (token invalidation)
+exports.logout = async (req, res) => {
+  try {
+    // If using cookies
+    res.clearCookie('token');
+    
+    // If using tokens in frontend storage, the frontend should remove it
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Logout failed' });
+  }
+};
+
+// Middleware to verify tokens
+exports.verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1] || req.cookies.token;
+  
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+};
