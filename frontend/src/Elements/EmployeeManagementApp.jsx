@@ -9,7 +9,11 @@ import { useLocation } from 'react-router-dom';
 
 const EmployeeManagementApp = () => {
     const location = useLocation();
-    const user = location.state?.user;
+    const user = location.state?.user ? location.state.user :  JSON.parse(localStorage.getItem('user'));
+    if(user){
+        localStorage.setItem('user', JSON.stringify(user));
+    }
+
     const [showModal, setShowModal] = useState(false);
     const [employeeObj, setEmployeeObj] = useState(null);
     const [employeesData, setEmployeesData] = useState({

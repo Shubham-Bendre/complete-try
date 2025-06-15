@@ -40,7 +40,9 @@ function App() {
             element={isAuthenticated ? <EmployeeDetails /> : <Navigate to="/parent-login" />}
           />
 
-          <Route path="/vaccine-masters" element={<VaccineMasterManagementApp />} />
+          <Route path="/vaccine-masters" 
+          element={isAuthenticated ? <VaccineMasterManagementApp /> : <Navigate to="/parent-login" />}
+          />
         </Routes>
       </BrowserRouter>
     </div>

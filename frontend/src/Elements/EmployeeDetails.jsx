@@ -1,57 +1,72 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { GetEmployeeDetailsById } from '../api';
+import { GetEmployeeDetailsById, GetAllVaccineMasters } from '../api';
 
 const EmployeeDetails = () => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [employee, setEmployee] = useState(null);
-    const [schedule, setSchedule] = useState([]);
+    const [vaccinesList, setVaccinesList] = useState([]);
+    const [completedVaccines, setCompletedVaccines] = useState([]);
+    const [nextVaccine, setNextVaccine] = useState(null);
 
     const fetchEmployeeDetails = async () => {
         try {
             const data = await GetEmployeeDetailsById(id);
             setEmployee(data);
-            generateVaccineSchedule(data.dob, data.vaccineCount);
+            calculateVaccineSchedule(data.dob);
         } catch (err) {
             alert('Error fetching child details');
         }
     };
 
-    const generateVaccineSchedule = (dobString, vaccinesTaken) => {
+    async function getVaccinesList() {
+        try {
+            const data = await GetAllVaccineMasters();
+            setVaccinesList(data.vaccines);
+        } catch (err) {
+            console.error('Error fetching vaccines:', err);
+        }
+    }
+
+    const calculateVaccineSchedule = (dobString) => {
         const dob = new Date(dobString);
-        const scheduleData = [
-            { name: 'BCG', dueInDays: 0 },
-            { name: 'Hepatitis B-1', dueInDays: 0 },
-            { name: 'OPV-1', dueInDays: 42 },
-            { name: 'DPT-1', dueInDays: 42 },
-            { name: 'Hepatitis B-2', dueInDays: 42 },
-            { name: 'OPV-2', dueInDays: 70 },
-            { name: 'DPT-2', dueInDays: 70 },
-            { name: 'Hepatitis B-3', dueInDays: 98 },
-            { name: 'MMR', dueInDays: 270 },
-        ];
+        const today = new Date();
+        
+        // Calculate age in months
+        const ageInMonths = (today.getFullYear() - dob.getFullYear()) * 12 + 
+            (today.getMonth() - dob.getMonth());
 
-        const fullSchedule = scheduleData.map((vaccine, index) => {
-            const dueDate = new Date(dob);
-            dueDate.setDate(dob.getDate() + vaccine.dueInDays);
-            return {
-                ...vaccine,
-                dueDate: dueDate.toDateString(),
-                isTaken: index < vaccinesTaken,
-            };
-        });
+        // Sort vaccines by recommended age
+        const sortedVaccines = [...vaccinesList].sort((a, b) => a.recommended_age - b.recommended_age);
+        
+        // Convert recommended_age from years to months for comparison
+        const completed = sortedVaccines.filter(vaccine => (vaccine.recommended_age * 12) <= ageInMonths);
+        setCompletedVaccines(completed);
 
-        setSchedule(fullSchedule);
+        // Find next vaccine (first vaccine where recommended age > current age)
+        const next = sortedVaccines.find(vaccine => (vaccine.recommended_age * 12) > ageInMonths);
+        setNextVaccine(next);
     };
 
     useEffect(() => {
         fetchEmployeeDetails();
+        getVaccinesList();
     }, [id]);
+
+    useEffect(() => {
+        if (employee && vaccinesList.length > 0) {
+            calculateVaccineSchedule(employee.dob);
+        }
+    }, [employee, vaccinesList]);
 
     if (!employee) {
         return <div className="text-center mt-10 text-gray-600">Child not found</div>;
     }
+
+    const ageInMonths = employee.dob ? 
+        (new Date().getFullYear() - new Date(employee.dob).getFullYear()) * 12 + 
+        (new Date().getMonth() - new Date(employee.dob).getMonth()) : 0;
 
     return (
         <div className="container mx-auto mt-10">
@@ -71,6 +86,7 @@ const EmployeeDetails = () => {
                         <div className="w-full md:w-2/3 md:pl-6">
                             <h4 className="text-xl font-semibold mb-2">{employee.name}</h4>
                             <p className="mb-2"><strong>Date of Birth:</strong> {new Date(employee.dob).toDateString()}</p>
+                            <p className="mb-2"><strong>Age:</strong> {Math.floor(ageInMonths/12)} years</p>
                             <p className="mb-2"><strong>Gender:</strong> {employee.gender}</p>
                             <p className="mb-2"><strong>Parent Mobile:</strong> {employee.parentMobile}</p>
                             <p className="mb-2"><strong>Vaccines Taken:</strong> {employee.vaccineCount}</p>
@@ -91,29 +107,39 @@ const EmployeeDetails = () => {
                     </div>
 
                     <div className="mt-6">
-                        <h4 className="text-lg font-semibold mb-2">Vaccine Progress</h4>
-                        <div className="w-full bg-gray-300 h-4 rounded mb-4">
-                            <div
-                                className="bg-green-500 h-4 rounded"
-                                style={{ width: `${(employee.vaccineCount / schedule.length) * 100}%` }}
-                            ></div>
+                        <h4 className="text-lg font-semibold mb-4">Vaccine Progress</h4>
+                        
+                        {/* Completed Vaccines */}
+                        <div className="mb-6">
+                            <h5 className="text-md font-semibold mb-2 text-green-600">Previous Vaccines</h5>
+                            <div className="space-y-2">
+                                {completedVaccines.map((vaccine, idx) => (
+                                    <div key={idx} className="flex justify-between items-center p-3 border rounded bg-green-50">
+                                        <div>
+                                            <span className="font-medium">{vaccine.name}</span>
+                                            <p className="text-sm text-gray-600">{vaccine.description}</p>
+                                        </div>
+                                        <span className="text-sm text-gray-500">Due at {vaccine.recommended_age} years</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="space-y-2">
-                            {schedule.map((vaccine, idx) => (
-                                <div key={idx} className="flex justify-between items-center p-2 border rounded bg-white">
-                                    <span>{vaccine.name}</span>
-                                    <span className="text-sm text-gray-500">Due: {vaccine.dueDate}</span>
-                                    <span
-                                        className={`px-2 py-1 text-xs rounded font-semibold ${
-                                            vaccine.isTaken ? 'bg-green-200 text-green-800' : 'bg-yellow-200 text-yellow-800'
-                                        }`}
-                                    >
-                                        {vaccine.isTaken ? 'Taken' : 'Pending'}
-                                    </span>
+                        {/* Next Upcoming Vaccine */}
+                        {nextVaccine && (
+                            <div>
+                                <h5 className="text-md font-semibold mb-2 text-blue-600">Next Upcoming Vaccine</h5>
+                                <div className="p-3 border rounded bg-blue-50">
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <span className="font-medium">{nextVaccine.name}</span>
+                                            <p className="text-sm text-gray-600">{nextVaccine.description}</p>
+                                        </div>
+                                        <span className="text-sm text-gray-500">Due at {nextVaccine.recommended_age} years</span>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     <button
