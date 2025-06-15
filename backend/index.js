@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
-const app = express();
 dotenv.config();
 
-// Middlewares
+const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -15,8 +16,8 @@ mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-.then(() => console.log("MongoDB Connected"))
-.catch((err) => console.log("MongoDB Connection Error:", err));
+.then(() => console.log("✅ MongoDB Connected"))
+.catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
 // Routes
 const EmployeeRoutes = require('./Routes/EmployeeRoutes');
@@ -30,5 +31,5 @@ app.use('/api/vaccine-masters', VaccineMasterRoutes);
 // Start Server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on PORT: ${PORT}`);
+    console.log(`🚀 Server running on port ${PORT}`);
 });
