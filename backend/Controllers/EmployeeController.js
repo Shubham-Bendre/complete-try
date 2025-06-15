@@ -6,12 +6,12 @@ const createEmployee = async (req, res) => {
         const qrCodeUrl = req?.file ? req?.file?.path : null;
         body.qrCodeUrl = qrCodeUrl;
 
-        if (!body.parentId) {
-            return res.status(400).json({
-                message: 'Parent ID is required',
-                success: false
-            });
-        }
+        // if (!body.parentId) {
+        //     return res.status(400).json({
+        //         message: 'Parent ID is required',
+        //         success: false
+        //     });
+        // }
 
         const emp = new EmployeeModel(body);
         await emp.save();

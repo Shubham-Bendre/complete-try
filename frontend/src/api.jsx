@@ -1,8 +1,8 @@
 const BASE_URL = 'http://localhost:8080';
 
-export const GetAllEmployees = async (search = '', page = 1, limit = 5) => {
+export const GetAllEmployees = async (search = '', page = 1, limit = 5, parentId) => {
     const url =
-        `${BASE_URL}/api/employees?search=${search}&page=${page}&limit=${limit}`;
+        `${BASE_URL}/api/employees?search=${search}&page=${page}&limit=${limit}&parentId=${parentId}`;
     const options = {
         method: 'GET',
         headers: {
@@ -86,7 +86,7 @@ export const UpdateEmployeeById = async (empObj, id) => {
     const url = `${BASE_URL}/api/employees/${id}`;
     console.log('url ', url);
     // Create a FormData object
-    const formData = new FormData();z
+    const formData = new FormData();
 
     // Append all fields to the FormData object
     for (const key in empObj) {

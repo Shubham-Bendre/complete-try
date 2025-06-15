@@ -5,8 +5,11 @@ import { DeleteEmployeeById, GetAllEmployees } from '../api';
 import { ToastContainer } from 'react-toastify';
 import { notify } from '../utils';
 import { Button } from "@/components/ui/button";
+import { useLocation } from 'react-router-dom';
 
 const EmployeeManagementApp = () => {
+    const location = useLocation();
+    const user = location.state?.user;
     const [showModal, setShowModal] = useState(false);
     const [employeeObj, setEmployeeObj] = useState(null);
     const [employeesData, setEmployeesData] = useState({
@@ -21,7 +24,7 @@ const EmployeeManagementApp = () => {
 
     const fetchEmployees = async (search = '', page = 1, limit = 5) => {
         try {
-            const data = await GetAllEmployees(search, page, limit);
+            const data = await GetAllEmployees(search, page, limit, user._id);
             setEmployeesData(data);
         } catch (err) {
             notify('Error fetching data', 'error');
@@ -68,6 +71,7 @@ const EmployeeManagementApp = () => {
                         showModal={showModal}
                         setShowModal={setShowModal}
                         employeeObj={employeeObj}
+                        user={user}
                     />
                 </div>
             </div>

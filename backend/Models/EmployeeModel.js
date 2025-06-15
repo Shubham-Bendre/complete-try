@@ -26,6 +26,10 @@ const EmployeeSchema = new Schema({
       qrCodeUrl: {
         type: String, // stored in Cloudinary
     },
+    parentId: {
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: () => new Date()

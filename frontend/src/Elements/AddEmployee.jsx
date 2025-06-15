@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { notify } from '../utils';
 import { CreateEmployee, UpdateEmployeeById } from '../api';
 
-function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
+
+function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj, user }) {
   const [employee, setEmployee] = useState({
     name: '',
     dob: '',
@@ -11,7 +12,9 @@ function AddEmployee({ showModal, setShowModal, fetchEmployees, employeeObj }) {
     profileImage: null,
   });
   const [updateMode, setUpdateMode] = useState(false);
-
+  if(user){
+    employee.parentId = user._id;
+  }
   useEffect(() => {
     if (employeeObj) {
       setEmployee(employeeObj);

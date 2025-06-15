@@ -9,9 +9,10 @@ export default function ParentLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/auth/login', form);
+      const response = await axios.post('http://localhost:8080/api/auth/login', form);
+      console.log(response);
       alert('Login successful');
-      navigate('/employee'); // redirect to landing/dashboard page
+      navigate('/employee', { state: { user: response.data.user } }); // redirect to landing/dashboard page
     } catch {
       alert('Invalid credentials');
     }
