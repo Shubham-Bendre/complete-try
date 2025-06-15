@@ -30,12 +30,6 @@ const EmployeeDetails = () => {
         }
     }
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('userData');
-        navigate('/');
-    };
-
     const calculateVaccineSchedule = (dobString) => {
         const dob = new Date(dobString);
         const today = new Date();
