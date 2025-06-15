@@ -86,7 +86,7 @@ export const UpdateEmployeeById = async (empObj, id) => {
     const url = `${BASE_URL}/api/employees/${id}`;
     console.log('url ', url);
     // Create a FormData object
-    const formData = new FormData();
+    const formData = new FormData();z
 
     // Append all fields to the FormData object
     for (const key in empObj) {

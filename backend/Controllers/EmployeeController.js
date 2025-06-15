@@ -6,6 +6,13 @@ const createEmployee = async (req, res) => {
         const qrCodeUrl = req?.file ? req?.file?.path : null;
         body.qrCodeUrl = qrCodeUrl;
 
+        if (!body.parentId) {
+            return res.status(400).json({
+                message: 'Parent ID is required',
+                success: false
+            });
+        }
+
         const emp = new EmployeeModel(body);
         await emp.save();
 
@@ -23,21 +30,19 @@ const createEmployee = async (req, res) => {
     }
 };
 
+
 const getAllEmployees = async (req, res) => {
     try {
-        let { page, limit, search } = req.query;
+        let { page, limit, search, parentId } = req.query;
         page = parseInt(page) || 1;
         limit = parseInt(limit) || 10;
         const skip = (page - 1) * limit;
 
         let searchCriteria = {};
+        if (parentId) searchCriteria.parentId = parentId;
+
         if (search) {
-            searchCriteria = {
-                name: {
-                    $regex: search,
-                    $options: 'i'
-                }
-            };
+            searchCriteria.name = { $regex: search, $options: 'i' };
         }
 
         const totalEmployees = await EmployeeModel.countDocuments(searchCriteria);
