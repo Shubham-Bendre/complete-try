@@ -28,7 +28,6 @@ const EmployeeSchema = new Schema({
     },
     parentId: {
         type: String,
-        required: true,
     },
     createdAt: {
         type: Date,
