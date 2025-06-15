@@ -3,6 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import EmployeeManagementApp from './Elements/EmployeeManagementApp';
 import EmployeeDetails from './Elements/EmployeeDetails';
+import VaccineMasterManagementApp from './Elements/VaccineMasterManagementApp';
 
 import LandingPage from './pages/LandingPage';
 import ParentLogin from './pages/ParentLogin';
@@ -38,6 +39,8 @@ function App() {
             path="/employee/:id"
             element={isAuthenticated ? <EmployeeDetails /> : <Navigate to="/parent-login" />}
           />
+
+          <Route path="/vaccine-masters" element={<VaccineMasterManagementApp />} />
         </Routes>
       </BrowserRouter>
     </div>

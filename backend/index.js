@@ -21,9 +21,11 @@ mongoose.connect(process.env.MONGO_URL, {
 // Routes
 const EmployeeRoutes = require('./Routes/EmployeeRoutes');
 const AuthRoutes = require('./Routes/AuthRoutes');
+const VaccineMasterRoutes = require('./Routes/VaccineMasterRoutes');
 
 app.use('/api/employees', EmployeeRoutes);
 app.use('/api/auth', AuthRoutes);
+app.use('/api/vaccine-masters', VaccineMasterRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 8080;

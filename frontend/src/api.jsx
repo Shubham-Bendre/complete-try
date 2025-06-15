@@ -107,3 +107,90 @@ export const UpdateEmployeeById = async (empObj, id) => {
     }
 };
 
+export const GetAllVaccineMasters = async (search = '', page = 1, limit = 5) => {
+    const url = `${BASE_URL}/api/vaccine-masters?search=${search}&page=${page}&limit=${limit}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    try {
+        const result = await fetch(url, options);
+        const { data } = await result.json();
+        return data;
+    } catch (err) {
+        return err;
+    }
+}
+
+export const GetVaccineMasterDetailsById = async (id) => {
+    const url = `${BASE_URL}/api/vaccine-masters/${id}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    try {
+        const result = await fetch(url, options);
+        const { data } = await result.json();
+        return data;
+    } catch (err) {
+        return err;
+    }
+}
+
+export const DeleteVaccineMasterById = async (id) => {
+    const url = `${BASE_URL}/api/vaccine-masters/${id}`;
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+    try {
+        const result = await fetch(url, options);
+        const data = await result.json();
+        return data;
+    } catch (err) {
+        return err;
+    }
+}
+
+export const CreateVaccineMaster = async (vaccineObj) => {
+    const url = `${BASE_URL}/api/vaccine-masters`;
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(vaccineObj)
+    };
+    try {
+        const result = await fetch(url, options);
+        const data = await result.json();
+        return data;
+    } catch (err) {
+        return err;
+    }
+};
+
+export const UpdateVaccineMasterById = async (vaccineObj, id) => {
+    const url = `${BASE_URL}/api/vaccine-masters/${id}`;
+    const options = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(vaccineObj)
+    };
+    try {
+        const result = await fetch(url, options);
+        const data = await result.json();
+        return data;
+    } catch (err) {
+        return err;
+    }
+};
+
