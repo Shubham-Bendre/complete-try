@@ -55,15 +55,6 @@ const EmployeeDetails = () => {
         setNextVaccine(next);
     };
 
-    const handleLogout = () => {
-        // Clear any user data from storage if needed
-        localStorage.removeItem('token');
-        localStorage.removeItem('userData');
-        
-        // Redirect to home page
-        navigate('/');
-    };
-
     useEffect(() => {
         fetchEmployeeDetails();
         getVaccinesList();
