@@ -16,7 +16,7 @@ const EmployeeDetails = () => {
             const data = await GetEmployeeDetailsById(id);
             setEmployee(data);
             calculateVaccineSchedule(data.dob);
-        } catch (err) {
+        } catch (error) {
             alert('Error fetching child details');
         }
     };
@@ -25,28 +25,33 @@ const EmployeeDetails = () => {
         try {
             const data = await GetAllVaccineMasters();
             setVaccinesList(data.vaccines);
-        } catch (err) {
-            console.error('Error fetching vaccines:', err);
+        } catch (error) {
+            console.error('Error fetching vaccines:', error);
         }
     }
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userData');
+        navigate('/');
+    };
 
     const calculateVaccineSchedule = (dobString) => {
         const dob = new Date(dobString);
         const today = new Date();
         
-        // Calculate age in months
-        const ageInMonths = (today.getFullYear() - dob.getFullYear()) * 12 + 
-            (today.getMonth() - dob.getMonth());
+        // Calculate age in days
+        const ageInDays = Math.floor((today - dob) / (1000 * 60 * 60 * 24));
 
         // Sort vaccines by recommended age
         const sortedVaccines = [...vaccinesList].sort((a, b) => a.recommended_age - b.recommended_age);
         
-        // Convert recommended_age from years to months for comparison
-        const completed = sortedVaccines.filter(vaccine => (vaccine.recommended_age * 12) <= ageInMonths);
+        // Filter completed vaccines (where recommended_age in days <= current age in days)
+        const completed = sortedVaccines.filter(vaccine => vaccine.recommended_age <= ageInDays);
         setCompletedVaccines(completed);
 
         // Find next vaccine (first vaccine where recommended age > current age)
-        const next = sortedVaccines.find(vaccine => (vaccine.recommended_age * 12) > ageInMonths);
+        const next = sortedVaccines.find(vaccine => vaccine.recommended_age > ageInDays);
         setNextVaccine(next);
     };
 
@@ -74,13 +79,12 @@ const EmployeeDetails = () => {
         return <div className="text-center mt-10 text-gray-600">Child not found</div>;
     }
 
-    const ageInMonths = employee.dob ? 
-        (new Date().getFullYear() - new Date(employee.dob).getFullYear()) * 12 + 
-        (new Date().getMonth() - new Date(employee.dob).getMonth()) : 0;
+    const ageInDays = employee.dob ? 
+        Math.floor((new Date() - new Date(employee.dob)) / (1000 * 60 * 60 * 24)) : 0;
 
     return (
         <div className="container mx-auto mt-10">
-		<div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-800">Child Vaccination Details</h1>
                 {/* <button 
                     onClick={handleLogout}
@@ -108,7 +112,7 @@ const EmployeeDetails = () => {
                         <div className="w-full md:w-2/3 md:pl-6">
                             <h4 className="text-xl font-semibold mb-2">{employee.name}</h4>
                             <p className="mb-2"><strong>Date of Birth:</strong> {new Date(employee.dob).toDateString()}</p>
-                            <p className="mb-2"><strong>Age:</strong> {Math.floor(ageInMonths/12)} years</p>
+                            <p className="mb-2"><strong>Age:</strong> {Math.floor(ageInDays/365)} years</p>
                             <p className="mb-2"><strong>Gender:</strong> {employee.gender}</p>
                             <p className="mb-2"><strong>Parent Mobile:</strong> {employee.parentMobile}</p>
                             <p className="mb-2"><strong>Vaccines Taken:</strong> {employee.vaccineCount}</p>
@@ -141,7 +145,7 @@ const EmployeeDetails = () => {
                                             <span className="font-medium">{vaccine.name}</span>
                                             <p className="text-sm text-gray-600">{vaccine.description}</p>
                                         </div>
-                                        <span className="text-sm text-gray-500">Due at {vaccine.recommended_age} years</span>
+                                        <span className="text-sm text-gray-500">Due at {vaccine.recommended_age_string}</span>
                                     </div>
                                 ))}
                             </div>
@@ -157,7 +161,7 @@ const EmployeeDetails = () => {
                                             <span className="font-medium">{nextVaccine.name}</span>
                                             <p className="text-sm text-gray-600">{nextVaccine.description}</p>
                                         </div>
-                                        <span className="text-sm text-gray-500">Due at {nextVaccine.recommended_age} years</span>
+                                        <span className="text-sm text-gray-500">Due at {nextVaccine.recommended_age_string}</span>
                                     </div>
                                 </div>
                             </div>

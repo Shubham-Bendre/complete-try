@@ -90,11 +90,22 @@ function AddVaccineMaster({ showModal, setShowModal, fetchVaccines, vaccineObj }
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-sm font-medium text-gray-700">Recommended Age (months)</label>
+                            <label className="block text-sm font-medium text-gray-700">Recommended Age (days)</label>
                             <input
-                                type="number"
+                                type="text"
                                 name="recommended_age"
                                 value={vaccine.recommended_age}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-sm font-medium text-gray-700">Recommended Age (string)</label>
+                            <input
+                                type="text"
+                                name="recommended_age_string"
+                                value={vaccine.recommended_age_string}
                                 onChange={handleChange}
                                 required
                                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"

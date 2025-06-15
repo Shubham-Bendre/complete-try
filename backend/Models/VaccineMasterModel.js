@@ -10,6 +10,11 @@ const VaccineMasterSchema = new Schema({
         type: Number,  // Age in months
         required: true,
     },
+    recommended_age_string: {
+        type: String,  // Age in months
+        required: true,
+    },
+
     description: {
         type: String,
         required: true,

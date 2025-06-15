@@ -10,9 +10,8 @@ import Logout from '../components/Logout'; // Import the Logout component
 
 const EmployeeManagementApp = () => {
     const location = useLocation();
-    const user = location.state?.user ? location.state.user : JSON.parse(localStorage.getItem('user'));
-    
-    if (user) {
+    const user = location.state?.user ? location.state.user :  JSON.parse(localStorage.getItem('user'));
+    if(user){
         localStorage.setItem('user', JSON.stringify(user));
     }
 
